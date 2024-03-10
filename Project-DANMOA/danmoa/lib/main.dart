@@ -5,9 +5,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:danmoa/page1_1.dart';
 import './style.dart' as style;
 import './storage.dart' as storage;
-import 'package:provider/provider.dart'; 
+import 'package:provider/provider.dart';
+
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import './kakao_login/user_controller.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  KakaoSdk.init(
+      nativeAppKey: 'ff55a146ea962e3d15616966093fa832',
+  );
+
   runApp(
    MaterialApp(
       theme: style.theme,
@@ -25,7 +33,11 @@ const DanMoa({ Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context){
-    return Scaffold(
+    return ChangeNotifierProvider(
+      create: (_) => UserController(
+        kakaoLoginApi: KakaoLoginApi(),
+      ),
+     child: Scaffold(
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       
       body: Column(
@@ -49,7 +61,22 @@ const DanMoa({ Key? key }) : super(key: key);
             padding: const EdgeInsetsDirectional.fromSTEB(0, 90, 0, 0),
             child: FFButtonWidget(
               onPressed: () async {
-                Navigator.of(context).pushNamed('/page1_1');
+                // Provider를 통해 UserController 인스턴스에 접근
+                final userController = Provider.of<UserController>(context, listen: false);
+                
+                // 카카오 로그인 수행
+                userController.kakaoLogin();
+                
+                // 로그인이 성공적으로 완료되었다면 (예를 들어, _user가 null이 아니라면), 다음 페이지로 이동
+                if (userController.user != null) {
+                  print("카카오 로그인 성공");
+                  print(userController.user);
+                  
+                  Navigator.of(context).pushNamed('/page1_1');
+                } else {
+                  // 로그인 실패 처리 (옵션)
+                  // 예: 사용자에게 로그인 실패 메시지를 보여주는 등의 처리
+                }
               },
               text: 'Kakao 로그인',
               icon: const FaIcon(
@@ -106,6 +133,6 @@ const DanMoa({ Key? key }) : super(key: key);
           )
         ],
       )
-    );        //bottomNavigationBar: BottomNavigationBar(items: items),
+    ));        //bottomNavigationBar: BottomNavigationBar(items: items),
   }
 }
