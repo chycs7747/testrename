@@ -17,14 +17,15 @@ void main() {
   );
 
   runApp(
-   MaterialApp(
-      theme: style.theme,
-      home: const DanMoa(),
-      routes: {
-        '/page1_1': (context) => const Page1_1(),
-      },
-    ),
-
+    ChangeNotifierProvider(
+      create: (c) => UserController(
+        kakaoLoginApi: KakaoLoginApi(),
+      ),
+      child: MaterialApp(
+        theme: style.theme,
+        home: const DanMoa(),
+      )
+    )
   );
 }
 
@@ -33,11 +34,7 @@ const DanMoa({ Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context){
-    return ChangeNotifierProvider(
-      create: (_) => UserController(
-        kakaoLoginApi: KakaoLoginApi(),
-      ),
-     child: Scaffold(
+    return Scaffold(
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       
       body: Column(
@@ -63,17 +60,19 @@ const DanMoa({ Key? key }) : super(key: key);
               onPressed: () async {
                 // Provider를 통해 UserController 인스턴스에 접근
                 final userController = Provider.of<UserController>(context, listen: false);
-                
+                print("유저 컨트롤러");
+                print(userController);
                 // 카카오 로그인 수행
-                userController.kakaoLogin();
+                await userController.kakaoLogin();
                 
                 // 로그인이 성공적으로 완료되었다면 (예를 들어, _user가 null이 아니라면), 다음 페이지로 이동
                 if (userController.user != null) {
                   print("카카오 로그인 성공");
                   print(userController.user);
                   
-                  Navigator.of(context).pushNamed('/page1_1');
                 } else {
+                  print("카카오로그인실패");
+                  print(userController.user);
                   // 로그인 실패 처리 (옵션)
                   // 예: 사용자에게 로그인 실패 메시지를 보여주는 등의 처리
                 }
@@ -133,6 +132,6 @@ const DanMoa({ Key? key }) : super(key: key);
           )
         ],
       )
-    ));        //bottomNavigationBar: BottomNavigationBar(items: items),
+    );        //bottomNavigationBar: BottomNavigationBar(items: items),
   }
 }

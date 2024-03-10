@@ -45,17 +45,22 @@ android {
         applicationId "com.cups.danmoa"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 
-        def keysPropertiesFile = rootProject.file("keys.properties")
+        def keysPropertiesFile = rootProject.file("../keys.properties")
         if (keysPropertiesFile.exists()) {
             Properties keysProperties = new Properties()
             keysProperties.load(new FileInputStream(keysPropertiesFile))
+            // 여기에서 로그를 출력합니다.
+            println "KAKAO_APP_KEY: " + keysProperties['KAKAO_APP_KEY']
 
-            manifestPlaceholders = [kakaoAppKey: keysProperties['KAKAO_APP_KEY']]
+            manifestPlaceholders += [kakaoAppKey: keysProperties['KAKAO_APP_KEY']]
+        }
+        else {
+            println "${rootProject}"
         }
     }
 
