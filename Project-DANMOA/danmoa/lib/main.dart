@@ -6,7 +6,7 @@ import 'package:danmoa/page1_1.dart';
 import './style.dart' as style;
 import './storage.dart' as storage;
 import 'package:provider/provider.dart'; 
-tst
+
 void main() {
   runApp(
    MaterialApp(
