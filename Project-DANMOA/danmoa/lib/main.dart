@@ -8,6 +8,7 @@ import './storage.dart' as storage;
 import 'package:provider/provider.dart';
 
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import './kakao_login/kakao_api.dart';
 import './kakao_login/user_controller.dart';
 
 void main() {
@@ -69,7 +70,6 @@ const DanMoa({ Key? key }) : super(key: key);
                 if (userController.user != null) {
                   print("카카오 로그인 성공");
                   print(userController.user);
-                  
                 } else {
                   print("카카오로그인실패");
                   print(userController.user);
